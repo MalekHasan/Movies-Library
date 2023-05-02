@@ -21,7 +21,9 @@ In this project we use **NodeJs** , **ExpressJS** and **CorsJS**.
 2. When we recive the request from the user
 3. Using the method that have been returned from the ExpressJS we use method called (get)this method take the path or route (**routing procces which mean every request have a specific path or route to get a specific response**) to render the resopnse to the page.
 4. We use method called listen embedded in ExpressJS to start and listen on a specific port for connections.
-
+5. Later on ,we install Axios.js and dotenv.js
+6. We use axios to handle with the API like bring the data from the API (which is the 3rd party) and give the user the data.
+7. We used the dotenv to hide the port of our server and the APIKEY  
 ## Project Features
 
 <!-- What are the features included in you app -->
