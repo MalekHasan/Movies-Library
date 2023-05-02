@@ -1,7 +1,11 @@
+require("dotenv").config();
+
 //import express.js framework
 const express=require("express");
 const app=express();
-const port=3000;
+const port=process.env.PORT;
+const Key=process.env.ABI_KEY;
+const axios=require("axios");
 //import cors.js
 const cors=require("cors");
 app.use(cors());
@@ -28,6 +32,42 @@ app.get('/',(req,res)=>{
 app.get('/favorite',(req,res)=>{
     res.send("Welcome to Favorite Page")
 })
+app.get('/trending',handleTrendingMovies);
+app.get('/search',handleSerchItems);
+app.get('/people',handlePopularPeople);
+app.get('/tv',handleLatestTv);
+// handleTrendingMovies
+async function handleTrendingMovies(req,res) {
+    const url=`https://api.themoviedb.org/3/trending/all/day?api_key=${Key}`;
+    let trendingMovies=await axios.get(url);
+    let trending=trendingMovies.data.results;
+    res.send(trending);
+    console.log(trendingMovies);
+}
+// handleSerchItems
+async function handleSerchItems(req,res) {
+    const url=`https://api.themoviedb.org/3/search/movie?api_key=${Key}&language=en-US&query=The&page=2`;
+    let serchItems=await axios.get(url);
+    let serach=serchItems.data.results;
+    res.send(serach);
+    console.log(serchItems);
+}
+// handlePopularPeople
+async function handlePopularPeople(req,res) {
+    const url=`https://api.themoviedb.org/3/person/popular?api_key=${Key}&language=en-US&page=1`;
+    let popularPeople=await axios.get(url);
+    let people=popularPeople.data.results;
+    res.send(people);
+    console.log(popularPeople);
+}
+// handleLatestTv
+async function handleLatestTv(req,res) {
+    const url=`https://api.themoviedb.org/3/tv/latest?api_key=${Key}&language=en-US`;
+    let latestTV=await axios.get(url);
+    let tv=latestTV.data;
+    res.send(tv);
+    console.log(latestTV);
+}
 //handle page error
 app.use(notFoundPage)
 function notFoundPage(req,res){
