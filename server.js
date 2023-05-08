@@ -41,9 +41,37 @@ app.get('/trending',handleTrendingMovies);
 app.get('/search',handleSerchItems);
 app.get('/people',handlePopularPeople);
 app.get('/tv',handleLatestTv);
-app.get('/getMovie',getMoviesHandler);
-app.post('/addMovie',addMoviesHandler);
+app.get('/movie',getMoviesHandler);
+app.post('/movie',addMoviesHandler);
+/* ************************************** */
+app.delete('/delete/:id',deleteMoviesHandler);
+app.put('/update/:id',updateMoviesHandler);
+app.get('/getMovie/:id',getMovieHandler);
 // handleTrendingMovies
+function getMovieHandler(req,res){
+    const movieId=req.params.id;
+    const sql =`select * from movie where id=${movieId}`;
+    client.query(sql).then((data)=>{
+        res.status(200).send(data.rows)
+    })
+}
+function updateMoviesHandler(req,res){
+    const movieId=req.params.id;
+    const sql=`update movie set
+        title=$1,runtime=$2,gener=$3,actors=$4,plot=$5,imdbrating=$6
+        where id=${movieId} returning *;`
+    const values=[req.body.title,req.body.runtime,req.body.genre,req.body.actors,req.body.plot,req.body.imdbrating]
+    client.query(sql,values).then((data)=>{
+        res.status(200).send(data.rows);
+    })
+}
+function deleteMoviesHandler(req,res)
+{
+    const movieId=req.params.id;
+    const sql=`delete from movie where id=${movieId};`
+    client.query(sql).then((data)=>{
+        res.status(200).send("success");})
+}
 function getMoviesHandler(req,res){
     const sql ='select * from movie;'
     client.query(sql).then((data)=>{
