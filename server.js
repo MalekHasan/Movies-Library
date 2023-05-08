@@ -43,9 +43,18 @@ app.get('/people',handlePopularPeople);
 app.get('/tv',handleLatestTv);
 app.get('/movie',getMoviesHandler);
 app.post('/movie',addMoviesHandler);
-app.delete('/movie/:id',deleteMoviesHandler);
-app.put('/movie/:id',updateMoviesHandler);
+/* ************************************** */
+app.delete('/delete/:id',deleteMoviesHandler);
+app.put('/update/:id',updateMoviesHandler);
+app.get('/getMovie/:id',getMovieHandler);
 // handleTrendingMovies
+function getMovieHandler(req,res){
+    const movieId=req.params.id;
+    const sql =`select * from movie where id=${movieId}`;
+    client.query(sql).then((data)=>{
+        res.status(200).send(data.rows)
+    })
+}
 function updateMoviesHandler(req,res){
     const movieId=req.params.id;
     const sql=`update movie set
