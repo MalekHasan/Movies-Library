@@ -18,9 +18,10 @@ const client= new pg.Client(process.env.DATABSAE_URL);
 const mData =require('./Movies_Data/data.json')
 let result=[];
 //bulid an object to handle and push data that came from mData
-function Movies(id,title,time,genre,actors,description,imdbRating){
+function Movies(id,title,image_path,time,genre,actors,description,imdbRating){
     this.id=id;
     this.title=title;
+    this.image_path=image_path;
     this.time=time;
     this.genre=genre;
     this.actors=actors;
@@ -32,7 +33,7 @@ function Movies(id,title,time,genre,actors,description,imdbRating){
 app.get('/',(req,res)=>{
     mData.forEach((element)=>{
         console.log(element);
-        new Movies(element.Id,element.Title,element.Runtime,element.Genre,element.Actors,element.Plot,element.imdbRating)
+        new Movies(element.Id,element.Title,element.Image,element.Runtime,element.Genre,element.Actors,element.Plot,element.imdbRating)
     })
     res.json(result);
 })
@@ -58,33 +59,39 @@ function getMovieHandler(req,res){
 function updateMoviesHandler(req,res){
     const movieId=req.params.id;
     const sql=`update movie set
-        title=$1,runtime=$2,gener=$3,actors=$4,plot=$5,imdbrating=$6
+        title=$1,image_path=$2,runtime=$3,gener=$4,actors=$5,plot=$6,imdbrating=$7
         where id=${movieId} returning *;`
-    const values=[req.body.title,req.body.runtime,req.body.genre,req.body.actors,req.body.plot,req.body.imdbrating]
-    client.query(sql,values).then((data)=>{
-        res.status(200).send(data.rows);
-    })
+    const values=[req.body.title,req.body.image_path,req.body.runtime,req.body.genre,req.body.actors,req.body.plot,req.body.imdbrating]
+    client.query(sql,values).then(()=>{
+        const mysql =`select * from movie;`;
+        client.query(mysql).then((data)=>{
+            res.status(200).send(data.rows)
+        })    })
 }
 function deleteMoviesHandler(req,res)
 {
     const movieId=req.params.id;
     const sql=`delete from movie where id=${movieId};`
-    client.query(sql).then((data)=>{
-        res.status(200).send("success");})
+    client.query(sql).then(()=>{
+        const mysql =`select * from movie;`;
+        client.query(mysql).then((data)=>{
+            res.status(200).send(data.rows)
+        })     
+    })
 }
 function getMoviesHandler(req,res){
     const sql ='select * from movie;'
     client.query(sql).then((data)=>{
         let movies=data.rows.map((e)=>{
-            return new Movies(e.id,e.title,e.runtime,e.genre,e.actors,e.plot,e.imdbrating)
+            return new Movies(e.id,e.title,e.image_path,e.runtime,e.genre,e.actors,e.plot,e.imdbrating)
         })
         res.send(movies)
     })
 }
 function addMoviesHandler(req,res){
     const movie=req.body;
-    const values=[movie.title,movie.runtime,movie.genre,movie.actors,movie.plot,movie.imdbrating]
-    const sql=`INSERT INTO movie (title,runtime,gener,actors,plot,imdbrating) values ($1,$2,$3,$4,$5,$6);`
+    const values=[movie.title,movie.image_path,movie.runtime,movie.genre,movie.actors,movie.plot,movie.imdbrating]
+    const sql=`INSERT INTO movie (title,image_path,runtime,gener,actors,plot,imdbrating) values ($1,$2,$3,$4,$5,$6,$7);`
     client.query(sql,values).then(()=>{
         res.send("Adding Movie Successful")
     })
