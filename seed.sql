@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS movie(
     runtime varchar(255),
     gener varchar(255),
     actors varchar(255),
-    plot varchar(255),
+    plot varchar(400),
     imdbrating varchar(255)
 ); 
 INSERT INTO movie (title,image_path,runtime,gener,actors,plot,imdbrating) values ('fast furios',null,'150 minute','action,drama','malek','malek','18');

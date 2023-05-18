@@ -62,16 +62,22 @@ function updateMoviesHandler(req,res){
         title=$1,image_path=$2,runtime=$3,gener=$4,actors=$5,plot=$6,imdbrating=$7
         where id=${movieId} returning *;`
     const values=[req.body.title,req.body.image_path,req.body.runtime,req.body.genre,req.body.actors,req.body.plot,req.body.imdbrating]
-    client.query(sql,values).then((data)=>{
-        res.status(200).send(data.rows);
-    })
+    client.query(sql,values).then(()=>{
+        const mysql =`select * from movie;`;
+        client.query(mysql).then((data)=>{
+            res.status(200).send(data.rows)
+        })    })
 }
 function deleteMoviesHandler(req,res)
 {
     const movieId=req.params.id;
     const sql=`delete from movie where id=${movieId};`
-    client.query(sql).then((data)=>{
-        res.status(200).send("success");})
+    client.query(sql).then(()=>{
+        const mysql =`select * from movie;`;
+        client.query(mysql).then((data)=>{
+            res.status(200).send(data.rows)
+        })     
+    })
 }
 function getMoviesHandler(req,res){
     const sql ='select * from movie;'
